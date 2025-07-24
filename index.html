@@ -73,7 +73,7 @@
   </header>
 
   <div class="section">
-    <h2>📆 Raspored mečeva</h2>
+    <h2>🗓️ Raspored mečeva</h2>
     <table id="raspored">
       <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
       <tbody></tbody>
@@ -83,7 +83,7 @@
   <div class="section">
     <h2>📊 Tabela</h2>
     <table id="tabela">
-      <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th>DG</th><th>PG</th><th>GR</th><th>Bodovi</th></tr></thead>
+      <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th title="Data goals">🌟</th><th title="Primljeni golovi">❌</th><th title="Gol razlika">⚖️</th><th>Bodovi</th></tr></thead>
       <tbody></tbody>
     </table>
     <div id="last-updated"></div>
@@ -97,7 +97,7 @@
     async function loadCSV(url, tableId, highlightToday = false, sortByBodovi = false) {
       const response = await fetch(url);
       const data = await response.text();
-      const rows = data.trim().split('\n').map(row => row.split(','));
+      const rows = data.trim().split('\n').map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '')));
       const tbody = document.querySelector(`#${tableId} tbody`);
       tbody.innerHTML = '';
 
@@ -111,8 +111,8 @@
         const tr = document.createElement('tr');
 
         if (highlightToday && tableId === 'raspored') {
-          const today = new Date().toISOString().slice(0, 10);
-          const matchDate = new Date(cols[0]).toISOString().slice(0, 10);
+          const today = new Date().toLocaleDateString('sr-ME');
+          const matchDate = cols[0].replaceAll('"', '').trim();
           if (today === matchDate) {
             tr.classList.add('highlight');
           }
@@ -120,7 +120,7 @@
 
         cols.forEach(col => {
           const td = document.createElement('td');
-          td.textContent = col;
+          td.textContent = col.replace(/^"|"$/g, '');
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
