@@ -5,43 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FIFA PS5 Liga - Coinis 2025</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0d1b2a;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #1b263b;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #ffd700;
-    }
-    .section {
-      padding: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #415a77;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background: #1b263b;
-    }
-    .footer {
-      text-align: center;
-      padding: 15px;
-      background: #1b263b;
-      margin-top: 40px;
-    }
+    body { font-family: Arial, sans-serif; background: #0d1b2a; color: white; margin: 0; padding: 0; }
+    header { background: #1b263b; padding: 20px; text-align: center; }
+    h1 { color: #ffd700; }
+    .section { padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #415a77; padding: 10px; text-align: center; }
+    th { background: #1b263b; }
+    .footer { text-align: center; padding: 15px; background: #1b263b; margin-top: 40px; }
   </style>
 </head>
 <body>
@@ -53,29 +24,16 @@
   <div class="section">
     <h2>📆 Raspored mečeva</h2>
     <table id="raspored">
-      <tr>
-        <th>Datum</th>
-        <th>Domaćin</th>
-        <th>Gost</th>
-        <th>Rezultat</th>
-      </tr>
+      <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
+      <tbody></tbody>
     </table>
   </div>
 
   <div class="section">
     <h2>📊 Tabela</h2>
     <table id="tabela">
-      <tr>
-        <th>Tim</th>
-        <th>O</th>
-        <th>P</th>
-        <th>R</th>
-        <th>I</th>
-        <th>DG</th>
-        <th>PG</th>
-        <th>GR</th>
-        <th>Bodovi</th>
-      </tr>
+      <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th>DG</th><th>PG</th><th>GR</th><th>Bodovi</th></tr></thead>
+      <tbody></tbody>
     </table>
   </div>
 
@@ -84,28 +42,25 @@
   </div>
 
   <script>
-    // Placeholder podaci - zamijeniti Google Sheet integracijom ili API-em
-    const raspored = [
-      { datum: "01.08.2025", domacin: "Igrač 1", gost: "Igrač 2", rezultat: "3:1" },
-      { datum: "02.08.2025", domacin: "Igrač 3", gost: "Igrač 4", rezultat: "1:1" }
-    ];
+    async function loadCSV(url, tableId) {
+      const response = await fetch(url);
+      const data = await response.text();
+      const rows = data.trim().split('\n').map(row => row.split(','));
+      const tbody = document.querySelector(`#${tableId} tbody`);
+      tbody.innerHTML = '';
+      rows.slice(1).forEach(cols => {
+        const tr = document.createElement('tr');
+        cols.forEach(col => {
+          const td = document.createElement('td');
+          td.textContent = col;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
 
-    const tabela = [
-      { tim: "Igrač 1", O: 2, P: 2, R: 0, I: 0, DG: 6, PG: 2, GR: 4, Bodovi: 6 },
-      { tim: "Igrač 2", O: 2, P: 1, R: 0, I: 1, DG: 3, PG: 3, GR: 0, Bodovi: 3 }
-    ];
-
-    const rasporedTable = document.getElementById("raspored");
-    raspored.forEach(match => {
-      const row = `<tr><td>${match.datum}</td><td>${match.domacin}</td><td>${match.gost}</td><td>${match.rezultat}</td></tr>`;
-      rasporedTable.innerHTML += row;
-    });
-
-    const tabelaTable = document.getElementById("tabela");
-    tabela.forEach(team => {
-      const row = `<tr><td>${team.tim}</td><td>${team.O}</td><td>${team.P}</td><td>${team.R}</td><td>${team.I}</td><td>${team.DG}</td><td>${team.PG}</td><td>${team.GR}</td><td>${team.Bodovi}</td></tr>`;
-      tabelaTable.innerHTML += row;
-    });
+    loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored", "raspored");
+    loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela", "tabela");
   </script>
 </body>
 </html>
