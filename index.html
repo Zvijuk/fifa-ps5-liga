@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FIFA PS5 Liga - Coinis 2025</title>
   <style>
+    /* Osnovni stilovi za stranicu */
     body { font-family: Arial, sans-serif; background: #0d1b2a; color: white; margin: 0; padding: 0; }
     header { background: #1b263b; padding: 20px; text-align: center; }
     h1 { color: #ffd700; }
@@ -25,7 +26,7 @@
     <h2>📆 Raspored mečeva</h2>
     <table id="raspored">
       <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
-      <tbody></tbody>
+      <tbody></tbody> <!-- Dinamički popunjen preko JS-a -->
     </table>
   </div>
 
@@ -33,7 +34,7 @@
     <h2>📊 Tabela</h2>
     <table id="tabela">
       <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th>DG</th><th>PG</th><th>GR</th><th>Bodovi</th></tr></thead>
-      <tbody></tbody>
+      <tbody></tbody> <!-- Dinamički popunjen preko JS-a -->
     </table>
   </div>
 
@@ -42,24 +43,37 @@
   </div>
 
   <script>
+    // Funkcija za učitavanje CSV sadržaja iz Google Sheet-a i prikaz u HTML tabeli
     async function loadCSV(url, tableId) {
-      const response = await fetch(url);
-      const data = await response.text();
+      const response = await fetch(url); // Preuzmi CSV sadržaj
+      const data = await response.text(); // Pretvori odgovor u tekst
+
+      // Parsiranje CSV-a: svaka linija predstavlja red tabele, razdvojeno zarezima
       const rows = data.trim().split('\n').map(row => row.split(','));
+
       const tbody = document.querySelector(`#${tableId} tbody`);
-      tbody.innerHTML = '';
+      tbody.innerHTML = ''; // Očisti postojeći sadržaj tabele
+
+      // Preskoči header i obradi svaki red
       rows.slice(1).forEach(cols => {
         const tr = document.createElement('tr');
+
+        // Za svaku ćeliju napravi <td> i dodaj u red
         cols.forEach(col => {
           const td = document.createElement('td');
           td.textContent = col;
           tr.appendChild(td);
         });
+
+        // Dodaj red u tabelu
         tbody.appendChild(tr);
       });
     }
 
+    // Učitaj raspored mečeva iz Sheet-a "Raspored"
     loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored", "raspored");
+
+    // Učitaj stanje tabele iz Sheet-a "Tabela"
     loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela", "tabela");
   </script>
 </body>
