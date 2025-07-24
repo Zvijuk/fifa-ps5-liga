@@ -4,16 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FIFA PS5 Liga - Coinis 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Osnovni stilovi za stranicu */
-    body { font-family: Arial, sans-serif; background: #0d1b2a; color: white; margin: 0; padding: 0; }
-    header { background: #1b263b; padding: 20px; text-align: center; }
-    h1 { color: #ffd700; }
-    .section { padding: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #415a77; padding: 10px; text-align: center; }
-    th { background: #1b263b; }
-    .footer { text-align: center; padding: 15px; background: #1b263b; margin-top: 40px; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #223368;
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1071b9;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #f9ae3b;
+    }
+
+    .section {
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #415a77;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #223368;
+      color: #ffffff;
+    }
+
+    .highlight {
+      background-color: #f9ae3b;
+      color: #223368;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background: #1071b9;
+      margin-top: 40px;
+    }
+
+    #last-updated {
+      font-size: 0.9em;
+      color: #ccc;
+      text-align: center;
+      margin-top: -10px;
+    }
   </style>
 </head>
 <body>
@@ -26,7 +76,7 @@
     <h2>📆 Raspored mečeva</h2>
     <table id="raspored">
       <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
-      <tbody></tbody> <!-- Dinamički popunjen preko JS-a -->
+      <tbody></tbody>
     </table>
   </div>
 
@@ -34,8 +84,9 @@
     <h2>📊 Tabela</h2>
     <table id="tabela">
       <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th>DG</th><th>PG</th><th>GR</th><th>Bodovi</th></tr></thead>
-      <tbody></tbody> <!-- Dinamički popunjen preko JS-a -->
+      <tbody></tbody>
     </table>
+    <div id="last-updated"></div>
   </div>
 
   <div class="footer">
@@ -43,38 +94,55 @@
   </div>
 
   <script>
-    // Funkcija za učitavanje CSV sadržaja iz Google Sheet-a i prikaz u HTML tabeli
-    async function loadCSV(url, tableId) {
-      const response = await fetch(url); // Preuzmi CSV sadržaj
-      const data = await response.text(); // Pretvori odgovor u tekst
-
-      // Parsiranje CSV-a: svaka linija predstavlja red tabele, razdvojeno zarezima
+    async function loadCSV(url, tableId, highlightToday = false, sortByBodovi = false) {
+      const response = await fetch(url);
+      const data = await response.text();
       const rows = data.trim().split('\n').map(row => row.split(','));
-
       const tbody = document.querySelector(`#${tableId} tbody`);
-      tbody.innerHTML = ''; // Očisti postojeći sadržaj tabele
+      tbody.innerHTML = '';
 
-      // Preskoči header i obradi svaki red
-      rows.slice(1).forEach(cols => {
+      let contentRows = rows.slice(1);
+
+      if (sortByBodovi && tableId === 'tabela') {
+        contentRows.sort((a, b) => parseInt(b[8]) - parseInt(a[8]));
+      }
+
+      contentRows.forEach(cols => {
         const tr = document.createElement('tr');
 
-        // Za svaku ćeliju napravi <td> i dodaj u red
+        if (highlightToday && tableId === 'raspored') {
+          const today = new Date().toISOString().slice(0, 10);
+          const matchDate = new Date(cols[0]).toISOString().slice(0, 10);
+          if (today === matchDate) {
+            tr.classList.add('highlight');
+          }
+        }
+
         cols.forEach(col => {
           const td = document.createElement('td');
           td.textContent = col;
           tr.appendChild(td);
         });
-
-        // Dodaj red u tabelu
         tbody.appendChild(tr);
       });
+
+      if (tableId === 'tabela') {
+        document.getElementById("last-updated").textContent = `Poslednje ažuriranje: ${new Date().toLocaleString('sr-ME')}`;
+      }
     }
 
-    // Učitaj raspored mečeva iz Sheet-a "Raspored"
-    loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored", "raspored");
+    loadCSV(
+      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored",
+      "raspored",
+      true
+    );
 
-    // Učitaj stanje tabele iz Sheet-a "Tabela"
-    loadCSV("https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela", "tabela");
+    loadCSV(
+      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela",
+      "tabela",
+      false,
+      true
+    );
   </script>
 </body>
 </html>
