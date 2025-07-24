@@ -73,20 +73,20 @@
   </header>
 
   <div class="section">
-    <h2>🗓️ Raspored mečeva</h2>
+    <h2>📊 Tabela</h2>
+    <table id="tabela">
+      <thead><tr><th>Tim</th><th>O (Odigrano)</th><th>P (Pobjede)</th><th>R (Remi)</th><th>I (Izgubljeno)</th><th>🌟 Datih</th><th>🚫 Primljenih</th><th>⚖️ Razlika</th><th>Bodovi</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div id="last-updated"></div>
+  </div>
+
+  <div class="section">
+    <h2>📆 Raspored mečeva</h2>
     <table id="raspored">
       <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
       <tbody></tbody>
     </table>
-  </div>
-
-  <div class="section">
-    <h2>📊 Tabela</h2>
-    <table id="tabela">
-      <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th title="Data goals">🌟</th><th title="Primljeni golovi">❌</th><th title="Gol razlika">⚖️</th><th>Bodovi</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <div id="last-updated"></div>
   </div>
 
   <div class="footer">
@@ -97,7 +97,7 @@
     async function loadCSV(url, tableId, highlightToday = false, sortByBodovi = false) {
       const response = await fetch(url);
       const data = await response.text();
-      const rows = data.trim().split('\n').map(row => row.split(',').map(cell => cell.replace(/^"|"$/g, '')));
+      const rows = data.trim().split('\n').map(row => row.split(','));
       const tbody = document.querySelector(`#${tableId} tbody`);
       tbody.innerHTML = '';
 
@@ -111,8 +111,8 @@
         const tr = document.createElement('tr');
 
         if (highlightToday && tableId === 'raspored') {
-          const today = new Date().toLocaleDateString('sr-ME');
-          const matchDate = cols[0].replaceAll('"', '').trim();
+          const today = new Date().toISOString().slice(0, 10);
+          const matchDate = new Date(cols[0].replace(/\./g, '-')).toISOString().slice(0, 10);
           if (today === matchDate) {
             tr.classList.add('highlight');
           }
@@ -132,15 +132,15 @@
     }
 
     loadCSV(
-      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored",
-      "raspored",
+      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela",
+      "tabela",
+      false,
       true
     );
 
     loadCSV(
-      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Tabela",
-      "tabela",
-      false,
+      "https://docs.google.com/spreadsheets/d/10MyyuWmyH4zT7o2s9w-xbTVpu2IyNaOaxJYN-IgEvsU/gviz/tq?tqx=out:csv&sheet=Raspored",
+      "raspored",
       true
     );
   </script>
