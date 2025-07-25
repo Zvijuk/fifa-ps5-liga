@@ -67,6 +67,15 @@
       text-align: center;
       margin-top: -10px;
     }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 12px;
+      }
+      th, td {
+        padding: 8px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -78,19 +87,7 @@
   <div class="section">
     <h2>📊 Tabela</h2>
     <table id="tabela">
-      <thead>
-        <tr>
-          <th>Tim</th>
-          <th>O</th>
-          <th>P</th>
-          <th>R</th>
-          <th>I</th>
-          <th>🌟 Datih</th>
-          <th>🚫 Primljenih</th>
-          <th>⚖️ Razlika</th>
-          <th>Bodovi</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Tim</th><th>O</th><th>P</th><th>R</th><th>I</th><th>🌟 Datih</th><th>🚫 Primljenih</th><th>⚖️ Razlika</th><th>Bodovi</th></tr></thead>
       <tbody></tbody>
     </table>
     <div id="last-updated"></div>
@@ -99,9 +96,7 @@
   <div class="section">
     <h2>📆 Raspored mečeva</h2>
     <table id="raspored">
-      <thead>
-        <tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr>
-      </thead>
+      <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
