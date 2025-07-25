@@ -28,16 +28,23 @@
       padding: 20px;
     }
 
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      min-width: 600px;
     }
 
     th, td {
       border: 1px solid #415a77;
       padding: 10px;
       text-align: center;
+      white-space: nowrap;
     }
 
     th {
@@ -64,6 +71,10 @@
       text-align: center;
       margin-top: -10px;
     }
+
+    .section:last-of-type {
+      margin-bottom: 60px;
+    }
   </style>
 </head>
 <body>
@@ -74,19 +85,37 @@
 
   <div class="section">
     <h2>📊 Tabela</h2>
-    <table id="tabela">
-      <thead><tr><th>Tim</th><th>O (Odigrano)</th><th>P (Pobjede)</th><th>R (Remi)</th><th>I (Izgubljeno)</th><th>🌟 Datih</th><th>🚫 Primljenih</th><th>⚖️ Razlika</th><th>Bodovi</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table id="tabela">
+        <thead>
+          <tr>
+            <th>Tim</th>
+            <th title="Odigrano">O</th>
+            <th title="Pobjede">P</th>
+            <th title="Remi">R</th>
+            <th title="Izgubljeno">I</th>
+            <th title="Datih">🌟</th>
+            <th title="Primljenih">🚫</th>
+            <th title="Razlika">⚖️</th>
+            <th>Bodovi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
     <div id="last-updated"></div>
   </div>
 
   <div class="section">
     <h2>📆 Raspored mečeva</h2>
-    <table id="raspored">
-      <thead><tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr></thead>
-      <tbody></tbody>
-    </table>
+    <div class="table-wrapper">
+      <table id="raspored">
+        <thead>
+          <tr><th>Datum</th><th>Domaćin</th><th>Gost</th><th>Rezultat</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="footer">
